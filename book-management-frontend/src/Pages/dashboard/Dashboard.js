@@ -3,6 +3,7 @@ import Search from './components/search/Search';
 import { findBooksByKeyword, ON_SUCCESS, saveBook, deleteBook, ON_ERROR } from './actions';
 import Booklist from './components/booklist/Booklist';
 import BookView from './components/bookview/BookView';
+import Alert from './components/alert/Alert';
 
 
 const initialState = {
@@ -16,7 +17,8 @@ const initialState = {
       genre: '',
       price: 10,
     },
-    error: undefined,
+    onSearchError: undefined,
+    onEditError: undefined,
   };
 
 class Dashboard extends Component {
@@ -38,10 +40,11 @@ class Dashboard extends Component {
     }
 
     handleShowBook(book) {
+        if(!book) book = initialState.book;
         this.setState({ 
             book: {
-                show: true,
                 ...book,
+                show: true,
             },
         });
     }
@@ -50,7 +53,8 @@ class Dashboard extends Component {
         this.setState({ 
             book: {
                 show: false,
-            }
+            },
+            onEditError: undefined,
         });
     }
 
@@ -63,7 +67,7 @@ class Dashboard extends Component {
     async handleSaveBook(book) {
         const saveBookResponse = await saveBook(book);
         if (saveBookResponse.type === ON_ERROR) {
-            this.setState({ error: saveBookResponse.data, loading: false });
+            this.setState({ onEditError: saveBookResponse.error, loading: false });
             return;
         }
         await this.searchBooks();
@@ -73,7 +77,7 @@ class Dashboard extends Component {
     async handleDeleteBook(id) {
         const deleteBookResponse = await deleteBook(id);
         if (deleteBookResponse.type === ON_ERROR) {
-            this.setState({ error: deleteBookResponse.data, loading: false });
+            this.setState({ onEditError: deleteBookResponse.error, loading: false });
             return;
         }
         await this.searchBooks();
@@ -84,10 +88,12 @@ class Dashboard extends Component {
         this.setState({ loading: true });
         const searchBookResponse = await findBooksByKeyword(searchString);
 
+        console.log(searchBookResponse);
+
         if (searchBookResponse.type === ON_SUCCESS) 
             this.setState({ books: searchBookResponse.data, loading: false });
         else 
-            this.setState({ error: searchBookResponse.data, loading: false });
+            this.setState({ onSearchError: searchBookResponse.error, loading: false });
     }
 
     render = () => (
@@ -103,6 +109,7 @@ class Dashboard extends Component {
                     { this.state.book.show ? (
                         <BookView 
                             book={this.state.book}
+                            editError={this.state.onEditError}
                             handleInputOnChange={this.handleInputOnChange}
                             handleCloseBook={this.handleCloseBook}
                             handleSaveBook={this.handleSaveBook}
@@ -110,6 +117,18 @@ class Dashboard extends Component {
                         />
                         ) : ''
                     }
+                    <button className="btn btn-primary btn-block" onClick={() => this.handleShowBook()}>
+                        Add a new book
+                    </button>
+                    <div className="dashboard-alert">
+                        {
+                            this.state.onSearchError ? (
+                                <Alert
+                                    information={this.state.onSearchError.message}
+                                />
+                            ) : ''
+                        }
+                    </div>
                 </div>
             </div>
         </Fragment>

@@ -1,6 +1,7 @@
 package com.ttu.book.management.api.controller;
 
 import com.ttu.book.management.api.exception.BookNotFoundException;
+import com.ttu.book.management.api.exception.InvalidBookException;
 import com.ttu.book.management.api.model.Book;
 import com.ttu.book.management.api.service.BookManagementService;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +27,8 @@ public class BookManagementController {
 
     @RequestMapping(method = POST, value = "")
     public Book createBook(@RequestBody BookCreationDto bookCreationDto) {
-        return bookManagementService.createBook(bookCreationDto);
+        throw new InvalidBookException();
+        //return bookManagementService.createBook(bookCreationDto);
     }
 
     @RequestMapping(method = PUT, value = "/{id}")

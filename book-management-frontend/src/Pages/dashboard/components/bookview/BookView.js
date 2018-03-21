@@ -13,6 +13,7 @@ const BookView = (props) => (
                 />
                 <BookViewForm
                     book={props.book}
+                    editError={props.editError}
                     handleInputOnChange={props.handleInputOnChange}
                 />
                 <BookViewFooter

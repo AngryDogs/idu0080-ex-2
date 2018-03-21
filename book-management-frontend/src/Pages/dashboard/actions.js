@@ -18,10 +18,18 @@ function getBookDto(book) {
     return dto;
 }
 
-async function getPayloadFromResponse(response) {
-    const data = await response.json();
-    const type = response.status === 200 ? ON_SUCCESS : ON_ERROR;
-    return { type, data };
+function handleError(response) {
+    if (!response.ok) throw Error(response.statusText);
+    return response;
+}
+
+async function getRequestedData(request) {
+    
+    return request
+        .then(handleError)
+        .then(response => response.json())
+        .then(data => ({ type: ON_SUCCESS, data }))
+        .catch(error => ({ type: ON_ERROR, error }));
 }
 
 export async function findBooksByKeyword(searchString) {
@@ -29,8 +37,9 @@ export async function findBooksByKeyword(searchString) {
         '/api/v1/books' : 
         `/api/v1/books?searchString=${searchString}`;
 
-    const response = await fetch(apiEndpoint);
-    return await getPayloadFromResponse(response);
+    const request = fetch(apiEndpoint);
+    
+    return await getRequestedData(request);
 }
 
 export async function saveBook(book) {
@@ -38,7 +47,7 @@ export async function saveBook(book) {
     const bookId = book.id ? book.id : '';
     const apiEndpoint = `/api/v1/books/${bookId}`;
 
-    const response = await fetch(apiEndpoint, {
+    const request = fetch(apiEndpoint, {
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
@@ -47,13 +56,13 @@ export async function saveBook(book) {
       body: JSON.stringify(dto),
     });
 
-    return await getPayloadFromResponse(response);
+    return await getRequestedData(request);
 }
 
 export async function deleteBook(id) {
     if(!id) return; 
     
-    const response = await fetch(`/api/v1/books/${id}`, {
+    const request = fetch(`/api/v1/books/${id}`, {
         headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json',
@@ -61,5 +70,5 @@ export async function deleteBook(id) {
         method: 'DELETE',
     });
 
-    return await getPayloadFromResponse(response);
+    return await getRequestedData(request);
 }
