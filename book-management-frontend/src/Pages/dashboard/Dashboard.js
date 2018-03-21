@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import Search from './components/search/Search';
-import { findBooksByKeyword, ON_SUCCESS, saveBook, deleteBook } from './actions';
+import { findBooksByKeyword, ON_SUCCESS, saveBook, deleteBook, ON_ERROR } from './actions';
 import Booklist from './components/booklist/Booklist';
 import BookView from './components/bookview/BookView';
 
@@ -16,7 +16,7 @@ const initialState = {
       genre: '',
       price: 10,
     },
-    onSearchError: undefined,
+    error: undefined,
   };
 
 class Dashboard extends Component {
@@ -26,7 +26,7 @@ class Dashboard extends Component {
         this.state = initialState;
         
         this.handleShowBook = this.handleShowBook.bind(this);
-        this.getSearchBookResponse = this.getSearchBookResponse.bind(this);
+        this.searchBooks = this.searchBooks.bind(this);
         this.handleCloseBook = this.handleCloseBook.bind(this);
         this.handleInputOnChange = this.handleInputOnChange.bind(this);
         this.handleSaveBook = this.handleSaveBook.bind(this);
@@ -34,7 +34,7 @@ class Dashboard extends Component {
     }
 
     componentDidMount() {
-        this.getSearchBookResponse();
+        this.searchBooks();
     }
 
     handleShowBook(book) {
@@ -62,29 +62,39 @@ class Dashboard extends Component {
 
     async handleSaveBook(book) {
         const saveBookResponse = await saveBook(book);
-        console.log(saveBookResponse);
+        if (saveBookResponse.type === ON_ERROR) {
+            this.setState({ error: saveBookResponse.data, loading: false });
+            return;
+        }
+        await this.searchBooks();
+        this.setState({ book: { ...initialState.book } });
     }
 
     async handleDeleteBook(id) {
         const deleteBookResponse = await deleteBook(id);
-        console.log(deleteBookResponse);
+        if (deleteBookResponse.type === ON_ERROR) {
+            this.setState({ error: deleteBookResponse.data, loading: false });
+            return;
+        }
+        await this.searchBooks();
+        this.setState({ book: { ...initialState.book } });
     }
 
-    async getSearchBookResponse(searchString) {
+    async searchBooks(searchString) {
         this.setState({ loading: true });
         const searchBookResponse = await findBooksByKeyword(searchString);
 
         if (searchBookResponse.type === ON_SUCCESS) 
             this.setState({ books: searchBookResponse.data, loading: false });
         else 
-            this.setState({ onSearchError: searchBookResponse.data, loading: false });
+            this.setState({ error: searchBookResponse.data, loading: false });
     }
 
     render = () => (
         <Fragment>
             <div className="row m-t-4 p-t-4">
                 <div className="col-xs-12 col-lg-8 col-lg-offset-2">
-                    <Search onSearchHandler={this.getSearchBookResponse} />
+                    <Search onSearchHandler={this.searchBooks} />
                     <Booklist 
                         onBookClick={this.handleShowBook}
                         loading={this.state.loading} 

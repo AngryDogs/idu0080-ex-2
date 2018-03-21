@@ -1,15 +1,15 @@
 package com.ttu.book.management.api.controller;
 
 import com.ttu.book.management.api.model.Book;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
+@Builder
 public class BookCreationDto {
 
     private String title;
