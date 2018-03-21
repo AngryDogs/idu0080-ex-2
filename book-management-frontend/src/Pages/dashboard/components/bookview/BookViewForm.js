@@ -1,4 +1,5 @@
 import React from 'react';
+import Alert from '../alert/Alert';
 
 const BookViewForm = (props) => (
     <div>   
@@ -45,6 +46,13 @@ const BookViewForm = (props) => (
                     id="creation-price"
                     onChange={event => props.handleInputOnChange('price', event.target.value)}
                 />
+            </div>
+            <div className="modal-alert">
+                {
+                    props.editError ? (
+                        <Alert information={props.editError.message} />
+                    ) : ''
+                }
             </div>
         </form>
     </div>
