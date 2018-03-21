@@ -88,8 +88,6 @@ class Dashboard extends Component {
         this.setState({ loading: true });
         const searchBookResponse = await findBooksByKeyword(searchString);
 
-        console.log(searchBookResponse);
-
         if (searchBookResponse.type === ON_SUCCESS) 
             this.setState({ books: searchBookResponse.data, loading: false });
         else 

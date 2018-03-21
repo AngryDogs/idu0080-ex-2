@@ -1,6 +1,12 @@
 export const ON_SUCCESS = 'ON_SUCCESS';
 export const ON_ERROR = 'ON_ERROR';
 
+function wait(ms) {
+    return new Promise((resolve) => {
+        setTimeout(resolve, ms);
+    });
+}
+
 function getBookDto(book) {
     const dto = {};
     if (book.title) {
@@ -32,14 +38,23 @@ async function getRequestedData(request) {
         .catch(error => ({ type: ON_ERROR, error }));
 }
 
-export async function findBooksByKeyword(searchString) {
+export async function findBooksByKeyword(searchString, interval) {
     const apiEndpoint = !searchString || searchString.length === 0 ?
         '/api/v1/books' : 
         `/api/v1/books?searchString=${searchString}`;
 
     const request = fetch(apiEndpoint);
-    
-    return await getRequestedData(request);
+    const response = await getRequestedData(request);
+
+    if(response.type === ON_SUCCESS) return response;
+    if(!interval) interval = 1;
+    if(interval > 10) return response;
+
+    interval++;
+
+    await wait(5000);
+
+    return findBooksByKeyword(searchString, interval);
 }
 
 export async function saveBook(book) {
