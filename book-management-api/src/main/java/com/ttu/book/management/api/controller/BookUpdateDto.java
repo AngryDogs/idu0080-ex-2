@@ -60,6 +60,6 @@ public class BookUpdateDto {
         } else if (price.precision() > 2) {
             return new InvalidBookPriceException("Price is in wrong format");
         }
-        return new InvalidBookException();
+        return new InvalidBookException("asd");
     }
 }

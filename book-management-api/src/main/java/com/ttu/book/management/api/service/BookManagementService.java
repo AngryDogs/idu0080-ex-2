@@ -32,7 +32,7 @@ public class BookManagementService {
         if (bookDto.valid()) {
             return bookRepository.save(bookDto.toBook());
         } else {
-            throw bookDto.getException();
+            throw new InvalidBookException("Failed to create a book");
         }
     }
 

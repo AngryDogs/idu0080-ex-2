@@ -66,10 +66,12 @@ class Dashboard extends Component {
 
     async handleSaveBook(book) {
         const saveBookResponse = await saveBook(book);
+        console.log(saveBookResponse);
         if (saveBookResponse.type === ON_ERROR) {
             this.setState({ onEditError: saveBookResponse.error, loading: false });
             return;
         }
+
         await this.searchBooks();
         this.setState({ book: { ...initialState.book } });
     }

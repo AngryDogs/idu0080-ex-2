@@ -25,8 +25,12 @@ function getBookDto(book) {
     return dto;
 }
 
-function handleError(response) {
-    if (!response.ok) throw Error(response.statusText);
+async function handleError(response) {
+    if (!response.ok) {
+        const data = await response.text();
+        const serialized = JSON.parse(data);
+        throw Error(serialized.message);
+    }
     return response;
 }
 
