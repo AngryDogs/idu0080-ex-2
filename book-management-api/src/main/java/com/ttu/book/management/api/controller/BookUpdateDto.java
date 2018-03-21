@@ -1,5 +1,7 @@
 package com.ttu.book.management.api.controller;
 
+import com.ttu.book.management.api.exception.InvalidBookException;
+import com.ttu.book.management.api.exception.InvalidBookPriceException;
 import com.ttu.book.management.api.model.Book;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,8 +26,8 @@ public class BookUpdateDto {
             (title == null || title.length() > 0) &&
             (author == null || author.length() > 0) &&
             (genre == null || genre.length() > 0) &&
-            (price == null || price.compareTo(BigDecimal.ZERO) > 0) &&
-            id != null
+            (price == null || price.compareTo(BigDecimal.ZERO) > 0) && price.precision() <= 2 &&
+             id != null
         );
     }
 
@@ -48,5 +50,16 @@ public class BookUpdateDto {
             .genre(genre != null ? genre : book.getGenre())
             .price(price != null ? price : book.getPrice())
             .build();
+    }
+
+    public RuntimeException getException() {
+        if (price == null) {
+            return new InvalidBookPriceException("Price is null");
+        } else if (price.compareTo(BigDecimal.ZERO) < 0) {
+            return new InvalidBookPriceException("Price is negative");
+        } else if (price.precision() > 2) {
+            return new InvalidBookPriceException("Price is in wrong format");
+        }
+        return new InvalidBookException();
     }
 }

@@ -4,6 +4,7 @@ import com.ttu.book.management.api.controller.BookCreationDto;
 import com.ttu.book.management.api.controller.BookUpdateDto;
 import com.ttu.book.management.api.exception.BookNotFoundException;
 import com.ttu.book.management.api.exception.InvalidBookException;
+import com.ttu.book.management.api.exception.InvalidBookPriceException;
 import com.ttu.book.management.api.model.Book;
 import com.ttu.book.management.api.repository.BookRepository;
 import lombok.RequiredArgsConstructor;
@@ -27,11 +28,11 @@ public class BookManagementService {
         return bookRepository.findBookById(id);
     }
 
-    public Book createBook(BookCreationDto bookDto) {
+    public Book createBook(BookCreationDto bookDto) throws InvalidBookPriceException, InvalidBookException {
         if (bookDto.valid()) {
             return bookRepository.save(bookDto.toBook());
         } else {
-            throw new InvalidBookException();
+            throw bookDto.getException();
         }
     }
 
@@ -44,7 +45,7 @@ public class BookManagementService {
                 .orElseThrow(BookNotFoundException::new);
             return bookRepository.save(update);
         } else {
-            throw new InvalidBookException();
+            throw bookUpdateDto.getException();
         }
     }
 

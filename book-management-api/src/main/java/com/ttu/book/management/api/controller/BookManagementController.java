@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static liquibase.util.StringUtils.*;
+import static liquibase.util.StringUtils.isEmpty;
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 @RestController
