@@ -4,9 +4,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
-public class InvalidBookPriceException extends RuntimeException {
+public class WrongFormatBookPriceException extends RuntimeException{
 
-    public InvalidBookPriceException(String message) {
+    public WrongFormatBookPriceException(String message) {
         super(message);
     }
 }

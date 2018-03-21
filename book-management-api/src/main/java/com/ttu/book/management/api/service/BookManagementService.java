@@ -32,7 +32,7 @@ public class BookManagementService {
         if (bookDto.valid()) {
             return bookRepository.save(bookDto.toBook());
         } else {
-            throw new InvalidBookException("Failed to create a book");
+            throw bookDto.getException();
         }
     }
 
@@ -42,7 +42,7 @@ public class BookManagementService {
             Book update = bookRepository
                 .findBookById(bookUpdateDto.getId())
                 .map(bookUpdateDto::merge)
-                .orElseThrow(BookNotFoundException::new);
+                .orElseThrow(() -> new BookNotFoundException("Book not found"));
             return bookRepository.save(update);
         } else {
             throw bookUpdateDto.getException();

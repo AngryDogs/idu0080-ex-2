@@ -39,13 +39,13 @@ public class BookManagementController {
     public Book findBookById(@PathVariable("id") Long id) {
         return bookManagementService
                 .findBookById(id)
-                .orElseThrow(BookNotFoundException::new);
+                .orElseThrow(() -> new BookNotFoundException("Book not found"));
     }
 
     @RequestMapping(method = DELETE, value = "/{id}")
     public Book deleteBookById(@PathVariable("id") Long id) {
         return bookManagementService
                 .deleteBookById(id)
-                .orElseThrow(BookNotFoundException::new);
+                .orElseThrow(() -> new BookNotFoundException("Book not found"));
     }
 }
