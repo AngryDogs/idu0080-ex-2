@@ -1,5 +1,6 @@
 export const ON_SUCCESS = 'ON_SUCCESS';
 export const ON_ERROR = 'ON_ERROR';
+export const RECONNECTION_DELAY = 5000;
 
 function wait(ms) {
     return new Promise((resolve) => {
@@ -52,7 +53,7 @@ export async function findBooksByKeyword(searchString, interval) {
 
     interval++;
 
-    await wait(5000);
+    await wait(RECONNECTION_DELAY);
 
     return findBooksByKeyword(searchString, interval);
 }
