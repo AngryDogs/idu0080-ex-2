@@ -7,10 +7,11 @@ import lombok.Setter;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
 public class InvalidBookException extends RuntimeException {
-
-    public InvalidBookException(String message) {
-        super(message);
-    }
+    private String message;
 }
