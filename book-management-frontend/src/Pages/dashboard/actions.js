@@ -1,6 +1,6 @@
 export const ON_SUCCESS = 'ON_SUCCESS';
 export const ON_ERROR = 'ON_ERROR';
-export const RECONNECTION_DELAY = 5000;
+export const RECONNECTION_DELAY = 100;
 
 function wait(ms) {
     return new Promise((resolve) => {
@@ -27,9 +27,10 @@ function getBookDto(book) {
 
 async function handleError(response) {
     if (!response.ok) {
-        const data = await response.text();
-        const serialized = JSON.parse(data);
-        throw Error(serialized.message);
+        if(response.status === 500)
+            throw Error(response.statusText);
+        const error = await response.json();
+        throw Error(error.message);
     }
     return response;
 }
