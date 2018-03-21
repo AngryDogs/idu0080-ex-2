@@ -2,7 +2,9 @@ import React from 'react';
 import PageRouter from './Pages/PageRouter';
 
 const App = () => (
-  <PageRouter />
+  <div className="container">
+    <PageRouter />
+  </div>
 );
 
 export default App;

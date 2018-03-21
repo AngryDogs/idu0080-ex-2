@@ -1,9 +1,8 @@
 import React from 'react';
 
 const BookViewForm = (props) => (
-    <div className="modal-content">   
+    <div>   
         <form className="modal-body">
-            
             <div className="form-group">
                 <label htmlFor="creation-title">Title</label>
                 <input
