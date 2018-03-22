@@ -26,10 +26,10 @@ public class BookUpdateDto {
 
     public boolean valid() {
         return (
-            (title == null || title.length() > 0) &&
-            (author == null || author.length() > 0) &&
-            (genre == null || genre.length() > 0) &&
-            (price == null || price.compareTo(BigDecimal.ZERO) > 0) && ValidationUtil.getNumberOfDecimalPlaces(price) <= 2 &&
+            (title != null && title.length() > 0) &&
+            (author != null && author.length() > 0) &&
+            (genre != null && genre.length() > 0) &&
+            (price != null && price.compareTo(BigDecimal.ZERO) > 0 && ValidationUtil.getNumberOfDecimalPlaces(price) <= 2) &&
              id != null
         );
     }
